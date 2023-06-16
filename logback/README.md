@@ -1,15 +1,22 @@
-##Custom Logback [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fgjbae1212%2Fhit-counter)](https://hits.seeyoufarm.com)
+## Custom Logback [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fgjbae1212%2Fhit-counter)](https://hits.seeyoufarm.com)
 ***
 Logback을 이용하여 원하는 시간별 로그 파일을 만드는 예제입니다.
 
-## 개발 목적
+## 개발 목적 (요구사항)
+***
+#### 로그 파일을 규칙에 맞게 생성해달라는 요청을 받아 만들게 되었습니다. 구체적인 요구사항은 아래와 같습니다.
+1. 파일의 이름은 yyyy-mm-dd-HH-mm.log
+2. 파일은 5분 단위로 롤링되도록 한다.
+3. 파일 롤링은 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 55, 0분에 맞춰서 한다
+   1. 즉, 파일 이름은 yyyy-mm-dd-HH-00 ... 55 이렇게 5분 단위로 생성되어야 한다.
+4. 로그 파일의 이름은 로그가 기록되는 시점이 아닌 파일 롤링되는 시점의 시간으로 한다.
+
+- 전체적인 요구사항을 예로 들자면, `1시 1분`에 애플리케이션이 실행되어 `로그가 기록`되었다면, 다음 파일 롤링은 `1시 5분`에 이루어지며, 파일 이름은 `yyyy-mm-dd-HH-05.log`가 되어야 한다.
+
+## 설정 가이드
 ***
 
-
-##설정 가이드
-***
-
-###1. CustomTimeBasedFileNamingAndTriggeringPolicy 클래스
+### 1. CustomTimeBasedFileNamingAndTriggeringPolicy 클래스
 ```java
 @NoAutoStart
 public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTimeBasedFileNamingAndTriggeringPolicy<E> {
@@ -45,7 +52,7 @@ public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTime
 2. `DefaultTimeBasedFileNamingAndTriggeringPolicy` 클래스의 `isTriggeringEvent` 메서드와 `TimeBasedFileNamingAndTriggeringPolicyBase` 클래스의 `computeNextCheck` 메서드를 오버라이딩하고, 위와 같이 코드를 수정합니다.
 3. `LOG_CREATION_CYCLE` 값을 통해 원하는 로그 파일 롤링 시간 사이클을 지정합니다 (분 단위)
 
-###2. logback-spring.xml 설정
+### 2. logback-spring.xml 설정
 ```xml
 <appender name="CUSTOM_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
@@ -72,7 +79,7 @@ public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTime
 1. 설정한 appender를 적용시킬 범위를 지정합니다.
 2. 해당 예제에서는 `LogbackScheduler` 클래스에서 발생하는 로그를 기록하고 파일로 저장하도록 하였습니다.
 
-###3. LogbackScheduler 클래스
+### 3. LogbackScheduler 클래스
 ```java
 @Slf4j
 @Component

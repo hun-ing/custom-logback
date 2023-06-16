@@ -20,14 +20,19 @@ public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTime
 			Date dateOfElapsedPeriod = this.dateInCurrentPeriod;
 			this.addInfo("Elapsed period: " + dateOfElapsedPeriod);
 
+			log.info("dateInCurrentPeriod = {}", this.dateInCurrentPeriod);
+			log.info("before nextCheck = {}", this.nextCheck);
+
 			this.setDateInCurrentPeriod(this.nextCheck);
 
 			this.elapsedPeriodsFileName = this.getCurrentPeriodsFileNameWithoutCompressionSuffix();
 
 			log.info("다음 로그 파일 이름 = {}", this.elapsedPeriodsFileName);
+			log.info("time = {}", time);
 
 			this.setDateInCurrentPeriod(time);
 			this.computeNextCheck();
+			log.info("after nextCheck = {}", this.nextCheck);
 			return true;
 		} else {
 			return false;
