@@ -11,7 +11,9 @@ import java.util.Date;
 @NoAutoStart
 public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTimeBasedFileNamingAndTriggeringPolicy<E> {
 
-	private final int LOG_CREATION_CYCLE = 5;
+	private final int LOG_CREATION_CYCLE_MINUTE = 5;
+	private final int ONE_MINUTE_MILLISECONDS = 60000;
+	private final int LOG_CREATION_CYCLE_MILLISECONDS = LOG_CREATION_CYCLE_MINUTE * ONE_MINUTE_MILLISECONDS;
 
 	@Override
 	public boolean isTriggeringEvent(File activeFile, E event) {
@@ -20,19 +22,11 @@ public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTime
 			Date dateOfElapsedPeriod = this.dateInCurrentPeriod;
 			this.addInfo("Elapsed period: " + dateOfElapsedPeriod);
 
-			log.info("dateInCurrentPeriod = {}", this.dateInCurrentPeriod);
-			log.info("before nextCheck = {}", this.nextCheck);
-
 			this.setDateInCurrentPeriod(this.nextCheck);
-
 			this.elapsedPeriodsFileName = this.getCurrentPeriodsFileNameWithoutCompressionSuffix();
-
-			log.info("다음 로그 파일 이름 = {}", this.elapsedPeriodsFileName);
-			log.info("time = {}", time);
-
 			this.setDateInCurrentPeriod(time);
+
 			this.computeNextCheck();
-			log.info("after nextCheck = {}", this.nextCheck);
 			return true;
 		} else {
 			return false;
@@ -41,7 +35,10 @@ public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTime
 
 	@Override
 	protected void computeNextCheck() {
-		this.nextCheck = this.rc.getEndOfNextNthPeriod(this.dateInCurrentPeriod, LOG_CREATION_CYCLE).getTime();
+		long milliseconds =this.dateInCurrentPeriod.getTime();
+		long remainder = milliseconds % LOG_CREATION_CYCLE_MILLISECONDS;
+		long difference = LOG_CREATION_CYCLE_MILLISECONDS - remainder;
+		this.nextCheck = milliseconds + difference;
 	}
 }
 

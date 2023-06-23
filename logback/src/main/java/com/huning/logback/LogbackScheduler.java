@@ -38,7 +38,7 @@ public class LogbackScheduler {
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String nowDateTime = now.format(formatter);
-		log.info("{}번째 로그입니다. 현재 시간은 {}입니다.", index, nowDateTime);
+		log.info("{}번째 로그입니다. 현재 시간은 {}입니다. 밀리초 = {}", index, nowDateTime, System.currentTimeMillis());
 		index++;
 	}
 }

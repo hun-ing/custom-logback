@@ -21,7 +21,9 @@ Logback을 이용하여 원하는 시간별 로그 파일을 만드는 예제입
 @NoAutoStart
 public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTimeBasedFileNamingAndTriggeringPolicy<E> {
 
-	private final int LOG_CREATION_CYCLE = 5;
+	private final int LOG_CREATION_CYCLE_MINUTE = 5;
+	private final int ONE_MINUTE_MILLISECONDS = 60000;
+	private final int LOG_CREATION_CYCLE_MILLISECONDS = LOG_CREATION_CYCLE_MINUTE * ONE_MINUTE_MILLISECONDS;
 
 	@Override
 	public boolean isTriggeringEvent(File activeFile, E event) {
@@ -31,10 +33,9 @@ public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTime
 			this.addInfo("Elapsed period: " + dateOfElapsedPeriod);
 
 			this.setDateInCurrentPeriod(this.nextCheck);
-
 			this.elapsedPeriodsFileName = this.getCurrentPeriodsFileNameWithoutCompressionSuffix();
-
 			this.setDateInCurrentPeriod(time);
+
 			this.computeNextCheck();
 			return true;
 		} else {
@@ -44,13 +45,16 @@ public class CustomTimeBasedFileNamingAndTriggeringPolicy<E> extends DefaultTime
 
 	@Override
 	protected void computeNextCheck() {
-		this.nextCheck = this.rc.getEndOfNextNthPeriod(this.dateInCurrentPeriod, LOG_CREATION_CYCLE).getTime();
+		long milliseconds =this.dateInCurrentPeriod.getTime();
+		long remainder = milliseconds % LOG_CREATION_CYCLE_MILLISECONDS;
+		long difference = LOG_CREATION_CYCLE_MILLISECONDS - remainder;
+		this.nextCheck = milliseconds + difference;
 	}
 }
 ```
 1. 클래스를 생성하고 `DefaultTimeBasedFileNamingAndTriggeringPolicy` 클래스를 상속받습니다.
 2. `DefaultTimeBasedFileNamingAndTriggeringPolicy` 클래스의 `isTriggeringEvent` 메서드와 `TimeBasedFileNamingAndTriggeringPolicyBase` 클래스의 `computeNextCheck` 메서드를 오버라이딩하고, 위와 같이 코드를 수정합니다.
-3. `LOG_CREATION_CYCLE` 값을 통해 원하는 로그 파일 롤링 시간 사이클을 지정합니다 (분 단위)
+3. `LOG_CREATION_CYCLE_MINUTE` 값을 통해 원하는 로그 파일 롤링 시간 사이클을 지정합니다 (분 단위)
 
 ### 2. logback-spring.xml 설정
 ```xml
