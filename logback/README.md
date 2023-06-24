@@ -1,6 +1,13 @@
 ## Custom Logback [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhun-ing%2Fcustom-logback%2Ftree%2Fmain%2Flogback&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 ***
-Logback을 이용하여 원하는 시간별 로그 파일을 만드는 예제입니다.
+- Logback을 이용하여 원하는 시간별 로그 파일을 만드는 예제입니다. 
+- 해당 프로젝트에 대한 과정은 블로그 포스팅 [logback 시리즈](https://velog.io/@hun-ing/%EB%A1%9C%EA%B7%B8%EB%A5%BC-%EB%82%A8%EA%B8%B0%EC%9E%90-Logback1) 에서 확인하실 수 있습니다
+
+## 업데이트 현황
+***
+- 2023-06-18 - 커스텀 로그백의 5분 단위 파일 롤링의 문제점 발견
+- 2023-06-23 - 5분단위 파일 롤링 문제점 해결 후 코드 업데이트 -> [블로그 포스팅](https://velog.io/@hun-ing/%EB%A1%9C%EA%B7%B8%EB%A5%BC-%EB%82%A8%EA%B8%B0%EC%9E%90-logback5)
+
 
 ## 개발 목적 (요구사항)
 ***
